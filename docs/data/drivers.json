@@ -1,0 +1,17 @@
+{
+  "drivers": [
+    { "iracing_name": "Alex Thunder", "discord_name": "ThunderAlex", "tag": "⚡" },
+    { "iracing_name": "Blake Speedway", "discord_name": "BlakeRaces", "tag": "🔥" },
+    { "iracing_name": "Casey Drift", "discord_name": "CaseyD", "tag": "🌀" },
+    { "iracing_name": "Dana Apex", "discord_name": "ApexDana", "tag": "🎯" },
+    { "iracing_name": "Eli Burnout", "discord_name": "EliB", "tag": "💨" },
+    { "iracing_name": "Frankie Crash", "discord_name": "FrankieCrash", "tag": "💥" },
+    { "iracing_name": "Gray Podium", "discord_name": "GrayP", "tag": "🏆" },
+    { "iracing_name": "Harper Spin", "discord_name": "HarperSpin", "tag": "🌪️" },
+    { "iracing_name": "Indie Lap", "discord_name": "IndieLap", "tag": "🎵" },
+    { "iracing_name": "Jordan Last", "discord_name": "JordanLast", "tag": "🐢" },
+    { "iracing_name": "Kyle Incident", "discord_name": "KyleI", "tag": "🚨" },
+    { "iracing_name": "Lane Chicane", "discord_name": "LaneC", "tag": "〽️" },
+    { "iracing_name": "Morgan Vee", "discord_name": "MorganVee", "tag": "🏎️" }
+  ]
+}

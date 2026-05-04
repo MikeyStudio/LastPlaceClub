@@ -1,0 +1,68 @@
+{
+  "season": "2026",
+  "races": [
+    {
+      "id": 1,
+      "date": "2026-04-06",
+      "track": "Brands Hatch Indy",
+      "car": "Formula Vee",
+      "results": [
+        { "driver": "Gray Podium", "finish": 1, "start": 2, "fastest_lap": false, "incidents": 0, "dnf": false },
+        { "driver": "Alex Thunder", "finish": 2, "start": 1, "fastest_lap": true, "incidents": 1, "dnf": false },
+        { "driver": "Dana Apex", "finish": 3, "start": 5, "fastest_lap": false, "incidents": 0, "dnf": false },
+        { "driver": "Blake Speedway", "finish": 4, "start": 3, "fastest_lap": false, "incidents": 2, "dnf": false },
+        { "driver": "Morgan Vee", "finish": 5, "start": 8, "fastest_lap": false, "incidents": 1, "dnf": false },
+        { "driver": "Casey Drift", "finish": 6, "start": 4, "fastest_lap": false, "incidents": 4, "dnf": false },
+        { "driver": "Eli Burnout", "finish": 7, "start": 6, "fastest_lap": false, "incidents": 1, "dnf": false },
+        { "driver": "Lane Chicane", "finish": 8, "start": 9, "fastest_lap": false, "incidents": 0, "dnf": false },
+        { "driver": "Harper Spin", "finish": 9, "start": 7, "fastest_lap": false, "incidents": 3, "dnf": false },
+        { "driver": "Indie Lap", "finish": 10, "start": 10, "fastest_lap": false, "incidents": 2, "dnf": false },
+        { "driver": "Kyle Incident", "finish": 11, "start": 11, "fastest_lap": false, "incidents": 6, "dnf": false },
+        { "driver": "Jordan Last", "finish": 12, "start": 13, "fastest_lap": false, "incidents": 1, "dnf": false },
+        { "driver": "Frankie Crash", "finish": 13, "start": 12, "fastest_lap": false, "incidents": 8, "dnf": true }
+      ]
+    },
+    {
+      "id": 2,
+      "date": "2026-04-13",
+      "track": "Lime Rock Park",
+      "car": "Formula Vee",
+      "results": [
+        { "driver": "Blake Speedway", "finish": 1, "start": 4, "fastest_lap": true, "incidents": 0, "dnf": false },
+        { "driver": "Casey Drift", "finish": 2, "start": 2, "fastest_lap": false, "incidents": 1, "dnf": false },
+        { "driver": "Alex Thunder", "finish": 3, "start": 1, "fastest_lap": false, "incidents": 2, "dnf": false },
+        { "driver": "Gray Podium", "finish": 4, "start": 3, "fastest_lap": false, "incidents": 0, "dnf": false },
+        { "driver": "Harper Spin", "finish": 5, "start": 9, "fastest_lap": false, "incidents": 1, "dnf": false },
+        { "driver": "Eli Burnout", "finish": 6, "start": 5, "fastest_lap": false, "incidents": 0, "dnf": false },
+        { "driver": "Jordan Last", "finish": 7, "start": 13, "fastest_lap": false, "incidents": 2, "dnf": false },
+        { "driver": "Morgan Vee", "finish": 8, "start": 6, "fastest_lap": false, "incidents": 3, "dnf": false },
+        { "driver": "Indie Lap", "finish": 9, "start": 8, "fastest_lap": false, "incidents": 1, "dnf": false },
+        { "driver": "Lane Chicane", "finish": 10, "start": 10, "fastest_lap": false, "incidents": 0, "dnf": false },
+        { "driver": "Dana Apex", "finish": 11, "start": 7, "fastest_lap": false, "incidents": 4, "dnf": false },
+        { "driver": "Kyle Incident", "finish": 12, "start": 11, "fastest_lap": false, "incidents": 7, "dnf": false },
+        { "driver": "Frankie Crash", "finish": 13, "start": 12, "fastest_lap": false, "incidents": 5, "dnf": true }
+      ]
+    },
+    {
+      "id": 3,
+      "date": "2026-04-20",
+      "track": "Okayama International Circuit",
+      "car": "Formula Vee",
+      "results": [
+        { "driver": "Dana Apex", "finish": 1, "start": 3, "fastest_lap": true, "incidents": 0, "dnf": false },
+        { "driver": "Gray Podium", "finish": 2, "start": 1, "fastest_lap": false, "incidents": 1, "dnf": false },
+        { "driver": "Morgan Vee", "finish": 3, "start": 6, "fastest_lap": false, "incidents": 0, "dnf": false },
+        { "driver": "Eli Burnout", "finish": 4, "start": 4, "fastest_lap": false, "incidents": 1, "dnf": false },
+        { "driver": "Blake Speedway", "finish": 5, "start": 2, "fastest_lap": false, "incidents": 3, "dnf": false },
+        { "driver": "Lane Chicane", "finish": 6, "start": 8, "fastest_lap": false, "incidents": 0, "dnf": false },
+        { "driver": "Casey Drift", "finish": 7, "start": 5, "fastest_lap": false, "incidents": 2, "dnf": false },
+        { "driver": "Alex Thunder", "finish": 8, "start": 7, "fastest_lap": false, "incidents": 4, "dnf": false },
+        { "driver": "Indie Lap", "finish": 9, "start": 9, "fastest_lap": false, "incidents": 1, "dnf": false },
+        { "driver": "Harper Spin", "finish": 10, "start": 10, "fastest_lap": false, "incidents": 2, "dnf": false },
+        { "driver": "Jordan Last", "finish": 11, "start": 12, "fastest_lap": false, "incidents": 0, "dnf": false },
+        { "driver": "Kyle Incident", "finish": 12, "start": 11, "fastest_lap": false, "incidents": 9, "dnf": false },
+        { "driver": "Frankie Crash", "finish": 13, "start": 13, "fastest_lap": false, "incidents": 3, "dnf": false }
+      ]
+    }
+  ]
+}
