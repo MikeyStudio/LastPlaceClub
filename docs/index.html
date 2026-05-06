@@ -638,7 +638,7 @@
         <td class="num">${s.races}</td>
         <td class="num">${s.wins > 0 ? `<strong class="gold">${s.wins}</strong>` : '—'}</td>
         <td class="num">${s.podiums > 0 ? s.podiums : '—'}</td>
-        <td class="num">${s.fastestLaps > 0 ? `<span class="red">⚡ ${s.fastestLaps}</span>` : '—'}</td>
+        <td class="num">${s.fastestLaps > 0 ? `<span class="Purple">⏱️ ${s.fastestLaps}</span>` : '—'}</td>
         <td class="num">${s.incidents}</td>
         <td class="num">${s.dnfs > 0 ? `<span class="dnf">DNF x${s.dnfs}</span>` : '—'}</td>
         <td class="num">${avg}</td>
@@ -670,7 +670,7 @@
       </div>
       <div class="stat-card">
         <div class="label">Fastest Lap King</div>
-        <div class="value">⚡</div>
+        <div class="value">⏱️</div>
         <div class="sub">${mostFL.displayName} · ${mostFL.fastestLaps} fastest lap${mostFL.fastestLaps !== 1 ? 's' : ''}</div>
       </div>
     `;
@@ -687,7 +687,7 @@
     awards.push({ emoji: '🥂', title: 'Podium Regular', winner: podiumKing.displayName, desc: `${podiumKing.podiums} podiums. Always up there.` });
 
     const flKing = [...stats].sort((a,b) => b.fastestLaps - a.fastestLaps)[0];
-    awards.push({ emoji: '⚡', title: 'Tire Whisperer', winner: flKing.displayName, desc: `${flKing.fastestLaps} fastest laps. Blistering pace.` });
+    awards.push({ emoji: '🟣⏱️🟣', title: 'Tire Whisperer', winner: flKing.displayName, desc: `${flKing.fastestLaps} fastest laps. Blistering pace.` });
 
     const chaosAgent = [...stats].sort((a,b) => b.incidents - a.incidents)[0];
     awards.push({ emoji: '💥', title: 'Chaos Agent', winner: chaosAgent.displayName, desc: `${chaosAgent.incidents} incidents. The safety car thanks you.` });
