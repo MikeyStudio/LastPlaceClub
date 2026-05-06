@@ -686,13 +686,13 @@
     awards.push({ emoji: '🏆', title: 'Race Winner', winner: winner.displayName, desc: `${winner.wins} wins this season. Pure pace.` });
 
     const podiumKing = [...stats].sort((a,b) => b.podiums - a.podiums)[0];
-    awards.push({ emoji: '🥂🥂', title: 'Podium Regular', winner: podiumKing.displayName, desc: `${podiumKing.podiums} podiums. Always up there.` });
+    awards.push({ emoji: '🥂', title: 'Podium Regular', winner: podiumKing.displayName, desc: `${podiumKing.podiums} podiums. Always up there.` });
 
     const flKing = [...stats].sort((a,b) => b.fastestLaps - a.fastestLaps)[0];
-    awards.push({ emoji: '🟣⏱️', title: 'Tire Whisperer', winner: flKing.displayName, desc: `${flKing.fastestLaps} fastest laps. Blistering pace.` });
+    awards.push({ emoji: '⏱️', title: 'Tire Whisperer', winner: flKing.displayName, desc: `${flKing.fastestLaps} fastest laps. Blistering pace.` });
 
     const chaosAgent = [...stats].sort((a,b) => b.incidents - a.incidents)[0];
-    awards.push({ emoji: '💥💥', title: 'Chaos Agent', winner: chaosAgent.displayName, desc: `${chaosAgent.incidents} incidents. The safety car thanks you.` });
+    awards.push({ emoji: '💥', title: 'Chaos Agent', winner: chaosAgent.displayName, desc: `${chaosAgent.incidents} incidents. The safety car thanks you.` });
 
     const cleanRacer = [...stats].filter(s => s.races >= 2).sort((a,b) => a.incidents - b.incidents)[0];
     awards.push({ emoji: '🧹🧹', title: 'Clean Racer', winner: cleanRacer.displayName, desc: `Only ${cleanRacer.incidents} incidents. An absolute gentleman.` });
