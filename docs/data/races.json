@@ -3,6 +3,70 @@
   "races": [
     {
       "id": 1,
+      "date": "2026-04-27",
+      "track": "Summit Point Raceway - Summit Point Raceway",
+      "car": "Formula Vee",
+      "results": [
+        {
+          "driver": "James Robinson27",
+          "finish": 1,
+          "start": 1,
+          "fastest_lap": true,
+          "incidents": 5,
+          "dnf": false
+        },
+        {
+          "driver": "Jenson Lucas",
+          "finish": 2,
+          "start": 2,
+          "fastest_lap": false,
+          "incidents": 2,
+          "dnf": false
+        },
+        {
+          "driver": "Justin Miller34",
+          "finish": 3,
+          "start": 6,
+          "fastest_lap": false,
+          "incidents": 6,
+          "dnf": false
+        },
+        {
+          "driver": "Michael Lescano",
+          "finish": 4,
+          "start": 3,
+          "fastest_lap": false,
+          "incidents": 10,
+          "dnf": false
+        },
+        {
+          "driver": "Lance Collard",
+          "finish": 5,
+          "start": 5,
+          "fastest_lap": false,
+          "incidents": 3,
+          "dnf": false
+        },
+        {
+          "driver": "Kyle Wittry",
+          "finish": 6,
+          "start": 4,
+          "fastest_lap": false,
+          "incidents": 6,
+          "dnf": false
+        },
+        {
+          "driver": "Kyle Hassel",
+          "finish": 7,
+          "start": 7,
+          "fastest_lap": false,
+          "incidents": 8,
+          "dnf": true
+        }
+      ]
+    },
+    {
+      "id": 2,
       "date": "2026-05-04",
       "track": "Tsukuba Circuit - 2000 Full",
       "car": "Formula Vee",
