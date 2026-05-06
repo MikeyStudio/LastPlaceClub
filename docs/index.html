@@ -695,7 +695,7 @@
     awards.push({ emoji: '💥', title: 'Chaos Agent', winner: chaosAgent.displayName, desc: `${chaosAgent.incidents} incidents. The safety car thanks you.` });
 
     const cleanRacer = [...stats].filter(s => s.races >= 2).sort((a,b) => a.incidents - b.incidents)[0];
-    awards.push({ emoji: '🧹🧹', title: 'Clean Racer', winner: cleanRacer.displayName, desc: `Only ${cleanRacer.incidents} incidents. An absolute gentleman.` });
+    awards.push({ emoji: '🧹', title: 'Clean Racer', winner: cleanRacer.displayName, desc: `Only ${cleanRacer.incidents} incidents. An absolute gentleman.` });
 
     const ghostDriver = [...stats].sort((a,b) => b.dnfs - a.dnfs)[0];
     if (ghostDriver.dnfs > 0) {
