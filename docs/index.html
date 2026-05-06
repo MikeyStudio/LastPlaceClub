@@ -566,7 +566,7 @@
   }
 
   function getDriverInfo(name) {
-    return driversData.find(d => d.iracing_name === name) || { iracing_name: name, discord_name: name, tag: '🏎️' };
+    return driversData.find(d => d.iracing_name === name) || { iracing_name: name, display_name: name, tag: '🏎️' };
   }
 
   function computeStats() {
@@ -574,8 +574,9 @@
     driversData.forEach(d => {
       stats[d.iracing_name] = {
         name: d.iracing_name,
-        discord: d.discord_name,
-        tag: d.tag,
+        displayName: d.display_name || d.iracing_name,
+        discord: d.display_name || d.iracing_name,
+        tag: d.tag || '🏎️',
         races: 0, wins: 0, podiums: 0, fastestLaps: 0,
         incidents: 0, dnfs: 0, totalFinish: 0,
         positions: []
@@ -584,7 +585,17 @@
 
     racesData.forEach(race => {
       race.results.forEach(r => {
-        if (!stats[r.driver]) return;
+        if (!stats[r.driver]) {
+          // Driver not in drivers.json, create entry on the fly
+          stats[r.driver] = {
+            name: r.driver,
+            displayName: r.driver,
+            tag: '🏎️',
+            races: 0, wins: 0, podiums: 0, fastestLaps: 0,
+            incidents: 0, dnfs: 0, totalFinish: 0,
+            positions: []
+          };
+        }
         const s = stats[r.driver];
         s.races++;
         s.totalFinish += r.finish;
@@ -622,8 +633,7 @@
       tr.innerHTML = `
         <td><div class="pos ${posClass}">${pos}</div></td>
         <td>
-          <div class="driver-name"><span class="driver-tag">${s.tag}</span>${s.name}</div>
-          <div class="discord-name">@${s.discord}</div>
+          <div class="driver-name"><span class="driver-tag">${s.tag}</span>${s.displayName}</div>
         </td>
         <td class="num">${s.races}</td>
         <td class="num">${s.wins > 0 ? `<strong class="gold">${s.wins}</strong>` : '—'}</td>
@@ -651,7 +661,7 @@
       <div class="stat-card">
         <div class="label">Current Leader</div>
         <div class="value">${topWinner.tag}</div>
-        <div class="sub">${topWinner.name} · ${topWinner.wins} win${topWinner.wins !== 1 ? 's' : ''}</div>
+        <div class="sub">${topWinner.displayName} · ${topWinner.wins} win${topWinner.wins !== 1 ? 's' : ''}</div>
       </div>
       <div class="stat-card">
         <div class="label">Total Incidents</div>
@@ -661,7 +671,7 @@
       <div class="stat-card">
         <div class="label">Fastest Lap King</div>
         <div class="value">⚡</div>
-        <div class="sub">${mostFL.name} · ${mostFL.fastestLaps} fastest lap${mostFL.fastestLaps !== 1 ? 's' : ''}</div>
+        <div class="sub">${mostFL.displayName} · ${mostFL.fastestLaps} fastest lap${mostFL.fastestLaps !== 1 ? 's' : ''}</div>
       </div>
     `;
   }
@@ -671,46 +681,39 @@
 
     // Most wins
     const winner = [...stats].sort((a,b) => b.wins - a.wins)[0];
-    awards.push({ emoji: '🏆', title: 'Race Winner', winner: winner.name, desc: `${winner.wins} wins this season. Pure pace.` });
+    awards.push({ emoji: '🏆', title: 'Race Winner', winner: winner.displayName, desc: `${winner.wins} wins this season. Pure pace.` });
 
-    // Most podiums
     const podiumKing = [...stats].sort((a,b) => b.podiums - a.podiums)[0];
-    awards.push({ emoji: '🥂', title: 'Podium Regular', winner: podiumKing.name, desc: `${podiumKing.podiums} podiums. Always up there.` });
+    awards.push({ emoji: '🥂', title: 'Podium Regular', winner: podiumKing.displayName, desc: `${podiumKing.podiums} podiums. Always up there.` });
 
-    // Most fastest laps
     const flKing = [...stats].sort((a,b) => b.fastestLaps - a.fastestLaps)[0];
-    awards.push({ emoji: '⚡', title: 'Tire Whisperer', winner: flKing.name, desc: `${flKing.fastestLaps} fastest laps. Blistering pace.` });
+    awards.push({ emoji: '⚡', title: 'Tire Whisperer', winner: flKing.displayName, desc: `${flKing.fastestLaps} fastest laps. Blistering pace.` });
 
-    // Most incidents
     const chaosAgent = [...stats].sort((a,b) => b.incidents - a.incidents)[0];
-    awards.push({ emoji: '💥', title: 'Chaos Agent', winner: chaosAgent.name, desc: `${chaosAgent.incidents} incidents. The safety car thanks you.` });
+    awards.push({ emoji: '💥', title: 'Chaos Agent', winner: chaosAgent.displayName, desc: `${chaosAgent.incidents} incidents. The safety car thanks you.` });
 
-    // Fewest incidents (min 2 races)
     const cleanRacer = [...stats].filter(s => s.races >= 2).sort((a,b) => a.incidents - b.incidents)[0];
-    awards.push({ emoji: '🧹', title: 'Clean Racer', winner: cleanRacer.name, desc: `Only ${cleanRacer.incidents} incidents. An absolute gentleman.` });
+    awards.push({ emoji: '🧹', title: 'Clean Racer', winner: cleanRacer.displayName, desc: `Only ${cleanRacer.incidents} incidents. An absolute gentleman.` });
 
-    // Most DNFs
     const ghostDriver = [...stats].sort((a,b) => b.dnfs - a.dnfs)[0];
     if (ghostDriver.dnfs > 0) {
-      awards.push({ emoji: '👻', title: 'Ghost', winner: ghostDriver.name, desc: `${ghostDriver.dnfs} DNF${ghostDriver.dnfs !== 1 ? 's' : ''}. Where did they go?` });
+      awards.push({ emoji: '👻', title: 'Ghost', winner: ghostDriver.displayName, desc: `${ghostDriver.dnfs} DNF${ghostDriver.dnfs !== 1 ? 's' : ''}. Where did they go?` });
     }
 
-    // Most positions gained on average
     const improver = [...stats].filter(s => s.positions.length >= 2).map(s => {
       const avgGain = s.positions.reduce((a, p) => a + (p.start - p.finish), 0) / s.positions.length;
       return { ...s, avgGain };
     }).sort((a,b) => b.avgGain - a.avgGain)[0];
     if (improver) {
-      awards.push({ emoji: '🚀', title: 'Rocket Start', winner: improver.name, desc: `Gains ${improver.avgGain.toFixed(1)} places on average. Move over!` });
+      awards.push({ emoji: '🚀', title: 'Rocket Start', winner: improver.displayName, desc: `Gains ${improver.avgGain.toFixed(1)} places on average. Move over!` });
     }
 
-    // Most 2nd places (Almost! award)
     const almostStats = stats.map(s => {
       const seconds = racesData.filter(r => r.results.find(res => res.driver === s.name && res.finish === 2)).length;
       return { ...s, seconds };
     }).sort((a,b) => b.seconds - a.seconds);
     if (almostStats[0].seconds > 0) {
-      awards.push({ emoji: '😤', title: 'Almost!', winner: almostStats[0].name, desc: `${almostStats[0].seconds}x runner-up. So close, so far.` });
+      awards.push({ emoji: '😤', title: 'Almost!', winner: almostStats[0].displayName, desc: `${almostStats[0].seconds}x runner-up. So close, so far.` });
     }
 
     const grid = document.getElementById('awards-grid');
@@ -719,7 +722,7 @@
         <div class="award-emoji">${a.emoji}</div>
         <div>
           <div class="award-title">${a.title}</div>
-          <div class="award-winner">${getDriverInfo(a.winner).tag} ${a.winner}</div>
+          <div class="award-winner">${a.winner}</div>
           <div class="award-desc">${a.desc}</div>
         </div>
       </div>
@@ -741,8 +744,7 @@
           <tr style="animation-delay:${r.finish * 0.03}s">
             <td><div class="pos ${posClass}">${r.finish}</div></td>
             <td>
-              <div class="driver-name"><span class="driver-tag">${info.tag}</span>${r.driver}</div>
-              <div class="discord-name">@${info.discord_name}</div>
+              <div class="driver-name"><span class="driver-tag">${info.tag}</span>${info.display_name}</div>
             </td>
             <td class="num">${r.start}</td>
             <td class="num">${gainStr}</td>
@@ -796,8 +798,7 @@
       return `
         <div class="driver-card" data-tag="${s.tag}" style="animation-delay:${i*0.05}s">
           <div class="driver-card-tag">${s.tag}</div>
-          <div class="driver-card-name">${s.name}</div>
-          <div class="driver-card-discord">@${s.discord}</div>
+          <div class="driver-card-name">${s.displayName}</div>
           <div class="driver-stats">
             <div class="driver-stat">
               <div class="ds-val gold">${s.wins}</div>
