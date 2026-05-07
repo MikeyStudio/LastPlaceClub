@@ -19,7 +19,7 @@
       --gold: #ffd700;
       --silver: #c0c0c0;
       --bronze: #cd7f32;
-      --purple: #9b59b6;
+      --purple: #ae27e6;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -461,9 +461,9 @@
     .mt2 { margin-top: 2rem; }
     .red { color: var(--red); }
     .gold { color: var(--gold); }
+    .purple { color: var(--purple); }
 
     .dnf { color: var(--red); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; }
-    .purple { color: var(--purple); }
 
     .improvement.positive { color: #4caf50; }
     .improvement.negative { color: var(--red); }
@@ -514,13 +514,12 @@
           <th style="width:3rem">Pos</th>
           <th>Driver</th>
           <th class="num">Races</th>
-          <th class="num">Points</th>
-          <th class="num">Avg Pts</th>
           <th class="num">Wins</th>
           <th class="num">Podiums</th>
-          <th class="num">Fast Laps</th>
+          <th class="num">Fastest Laps</th>
           <th class="num">Incidents</th>
           <th class="num">DNFs</th>
+          <th class="num">Avg Finish</th>
         </tr>
       </thead>
       <tbody id="standings-body"></tbody>
@@ -581,10 +580,12 @@
         discord: d.display_name || d.iracing_name,
         tag: d.tag || '🏎️',
         races: 0, wins: 0, podiums: 0, fastestLaps: 0,
-        incidents: 0, dnfs: 0, totalFinish: 0, points: 0,
+        incidents: 0, dnfs: 0, totalFinish: 0,
         positions: []
       };
     });
+
+    racesData.forEach(race => {
       race.results.forEach(r => {
         if (!stats[r.driver]) {
           // Driver not in drivers.json, create entry on the fly
@@ -593,7 +594,8 @@
             displayName: r.driver,
             tag: '🏎️',
             races: 0, wins: 0, podiums: 0, fastestLaps: 0,
-            incidents: 0, dnfs: 0, totalFinish: 0, points: 0,
+            incidents: 0, dnfs: 0, totalFinish: 0,
+            positions: []
           };
         }
         const s = stats[r.driver];
@@ -605,11 +607,6 @@
         if (r.fastest_lap) s.fastestLaps++;
         s.incidents += r.incidents;
         if (r.dnf) s.dnfs++;
-        // Points
-        const pointsMap = {1:25,2:18,3:15,4:12,5:10,6:8,7:6,8:4,9:2};
-        const racePoints = pointsMap[r.finish] || 1;
-        const flPoints = r.fastest_lap ? 1 : 0;
-        s.points += racePoints + flPoints;
       });
     });
 
@@ -617,12 +614,13 @@
   }
 
   function buildStandings(stats) {
-    // Sort by total points desc, then avg points as tiebreaker
+    // Sort by wins desc, then podiums, then avg finish
     const sorted = [...stats].sort((a, b) => {
-      if (b.points !== a.points) return b.points - a.points;
-      const avgA = a.races ? a.points / a.races : 0;
-      const avgB = b.races ? b.points / b.races : 0;
-      return avgB - avgA;
+      if (b.wins !== a.wins) return b.wins - a.wins;
+      if (b.podiums !== a.podiums) return b.podiums - a.podiums;
+      const avgA = a.races ? a.totalFinish / a.races : 99;
+      const avgB = b.races ? b.totalFinish / b.races : 99;
+      return avgA - avgB;
     });
 
     const tbody = document.getElementById('standings-body');
@@ -631,7 +629,7 @@
     sorted.forEach((s, i) => {
       const pos = i + 1;
       const posClass = pos === 1 ? 'p1' : pos === 2 ? 'p2' : pos === 3 ? 'p3' : '';
-      const avg = s.races ? (s.points / s.races).toFixed(1) : '-';
+      const avg = s.races ? (s.totalFinish / s.races).toFixed(1) : '-';
       const tr = document.createElement('tr');
       tr.style.animationDelay = `${i * 0.04}s`;
       tr.innerHTML = `
@@ -640,13 +638,12 @@
           <div class="driver-name"><span class="driver-tag">${s.tag}</span>${s.displayName}</div>
         </td>
         <td class="num">${s.races}</td>
-        <td class="num"><strong>${s.points}</strong></td>
-        <td class="num">${avg}</td>
         <td class="num">${s.wins > 0 ? `<strong class="gold">${s.wins}</strong>` : '—'}</td>
         <td class="num">${s.podiums > 0 ? s.podiums : '—'}</td>
         <td class="num">${s.fastestLaps > 0 ? `<span class="purple">⏱️ ${s.fastestLaps}</span>` : '—'}</td>
         <td class="num">${s.incidents}</td>
         <td class="num">${s.dnfs > 0 ? `<span class="dnf">DNF x${s.dnfs}</span>` : '—'}</td>
+        <td class="num">${avg}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -666,7 +663,7 @@
       <div class="stat-card">
         <div class="label">Current Leader</div>
         <div class="value">${topWinner.tag}</div>
-        <div class="sub">${topWinner.displayName} · ${topWinner.points} pts</div>
+        <div class="sub">${topWinner.displayName} · ${topWinner.wins} win${topWinner.wins !== 1 ? 's' : ''}</div>
       </div>
       <div class="stat-card">
         <div class="label">Total Incidents</div>
