@@ -582,6 +582,9 @@
         tag: d.tag || '🏎️',
         races: 0, wins: 0, podiums: 0, fastestLaps: 0,
         incidents: 0, dnfs: 0, totalFinish: 0, points: 0,
+        positions: []
+      };
+    });
       race.results.forEach(r => {
         if (!stats[r.driver]) {
           // Driver not in drivers.json, create entry on the fly
