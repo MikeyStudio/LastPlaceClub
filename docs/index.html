@@ -426,7 +426,7 @@
 
     .driver-stats {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 0.5rem;
     }
 
@@ -735,6 +735,7 @@
   }
 
   function buildRaces() {
+    const POINTS = {1:25,2:18,3:15,4:12,5:10,6:8,7:6,8:4,9:2};
     const list = document.getElementById('races-list');
     const sorted = [...racesData].sort((a,b) => b.id - a.id);
     list.innerHTML = sorted.map((race, i) => {
@@ -745,6 +746,7 @@
         const gainStr = gain > 0 ? `<span class="improvement positive">▲${gain}</span>` :
                         gain < 0 ? `<span class="improvement negative">▼${Math.abs(gain)}</span>` :
                         `<span class="improvement neutral">—</span>`;
+        const pts = (POINTS[r.finish] || 1) + (r.fastest_lap ? 1 : 0);
         return `
           <tr style="animation-delay:${r.finish * 0.03}s">
             <td><div class="pos ${posClass}">${r.finish}</div></td>
@@ -753,6 +755,7 @@
             </td>
             <td class="num">${r.start}</td>
             <td class="num">${gainStr}</td>
+            <td class="num"><strong>${pts}</strong></td>
             <td class="num">${r.fastest_lap ? '<span class="purple">⏱️ Yes</span>' : '—'}</td>
             <td class="num">${r.incidents}</td>
             <td class="num">${r.dnf ? '<span class="dnf">DNF</span>' : '—'}</td>
@@ -779,6 +782,7 @@
                   <th>Driver</th>
                   <th class="num">Start</th>
                   <th class="num">+/−</th>
+                  <th class="num">Pts</th>
                   <th class="num">FL</th>
                   <th class="num">Inc</th>
                   <th class="num">DNF</th>
@@ -790,21 +794,27 @@
         </div>`;
     }).join('');
 
-    // Open most recent by default
     if (sorted.length > 0) toggleRace(sorted[0].id);
   }
 
   function buildDrivers(stats) {
     const grid = document.getElementById('drivers-grid');
-    const sorted = [...stats].sort((a,b) => a.name.localeCompare(b.name));
+    const sorted = [...stats].sort((a,b) => a.displayName.localeCompare(b.displayName));
     grid.innerHTML = sorted.map((s, i) => {
-      const avg = s.races ? (s.totalFinish / s.races).toFixed(1) : '—';
-      const incPerRace = s.races ? (s.incidents / s.races).toFixed(1) : '—';
+      const avgPts = s.races ? (s.points / s.races).toFixed(1) : '—';
       return `
         <div class="driver-card" data-tag="${s.tag}" style="animation-delay:${i*0.05}s">
           <div class="driver-card-tag">${s.tag}</div>
           <div class="driver-card-name">${s.displayName}</div>
           <div class="driver-stats">
+            <div class="driver-stat">
+              <div class="ds-val gold">${s.points}</div>
+              <div class="ds-label">Points</div>
+            </div>
+            <div class="driver-stat">
+              <div class="ds-val">${avgPts}</div>
+              <div class="ds-label">Avg Pts</div>
+            </div>
             <div class="driver-stat">
               <div class="ds-val gold">${s.wins}</div>
               <div class="ds-label">Wins</div>
@@ -814,12 +824,12 @@
               <div class="ds-label">Podiums</div>
             </div>
             <div class="driver-stat">
-              <div class="ds-val red">${s.incidents}</div>
-              <div class="ds-label">Incidents</div>
+              <div class="ds-val purple">${s.fastestLaps}</div>
+              <div class="ds-label">Fast Laps</div>
             </div>
             <div class="driver-stat">
-              <div class="ds-val">${avg}</div>
-              <div class="ds-label">Avg Finish</div>
+              <div class="ds-val red">${s.incidents}</div>
+              <div class="ds-label">Incidents</div>
             </div>
           </div>
         </div>`;
