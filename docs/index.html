@@ -721,6 +721,16 @@
       awards.push({ emoji: '😤', title: 'Almost!', winner: almostStats[0].displayName, desc: `${almostStats[0].seconds}x runner-up. So close, so far.` });
     }
 
+    const pickBattles = [...stats].filter(s => s.races >= 2).sort((a,b) => {
+      const avgA = a.races ? a.points / a.races : 0;
+      const avgB = b.races ? b.points / b.races : 0;
+      return avgB - avgA;
+    })[0];
+    if (pickBattles) {
+      const avg = (pickBattles.points / pickBattles.races).toFixed(1);
+      awards.push({ emoji: '🎯', title: 'Pick Your Battles', winner: pickBattles.displayName, desc: `${avg} avg points per race. Quality over quantity.` });
+    }
+    
     const grid = document.getElementById('awards-grid');
     grid.innerHTML = awards.map((a, i) => `
       <div class="award-card" style="animation-delay:${i*0.06}s">
