@@ -11,8 +11,9 @@
       --bg: #0f0f0f;
       --bg2: #161616;
       --bg3: #1e1e1e;
-      --red: #e10600;
-      --red-dim: #8a0400;
+      --green: #00c853;
+      --green-dim: #007a34;
+      --danger: #e10600;
       --white: #f0f0f0;
       --grey: #888;
       --border: #2a2a2a;
@@ -35,7 +36,7 @@
     /* HEADER */
     header {
       background: var(--bg2);
-      border-bottom: 3px solid var(--red);
+      border-bottom: 3px solid var(--green);
       padding: 0 2rem;
       position: sticky;
       top: 0;
@@ -54,7 +55,7 @@
       text-transform: uppercase;
     }
 
-    .logo span { color: var(--red); }
+    .logo span { color: var(--green); }
 
     nav { display: flex; gap: 0.25rem; }
 
@@ -74,11 +75,11 @@
     }
 
     nav button:hover { color: var(--white); }
-    nav button.active { color: var(--red); border-bottom-color: var(--red); }
+    nav button.active { color: var(--green); border-bottom-color: var(--green); }
 
     /* ANNOUNCEMENT */
     .announcement {
-      background: var(--red);
+      background: var(--green);
       color: white;
       text-align: center;
       padding: 0.6rem 2rem;
@@ -113,7 +114,7 @@
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
       font-size: 20rem;
-      color: rgba(225,6,0,0.04);
+      color: rgba(0,200,83,0.04);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -130,7 +131,7 @@
       line-height: 1;
     }
 
-    .hero h1 span { color: var(--red); }
+    .hero h1 span { color: var(--green); }
 
     .hero p {
       color: var(--grey);
@@ -163,12 +164,12 @@
       transition: all 0.15s;
     }
 
-    .season-tab:hover { color: var(--white); border-color: var(--red); }
+    .season-tab:hover { color: var(--white); border-color: var(--green); }
 
     .season-tab.active {
-      background: var(--red);
+      background: var(--green);
       color: white;
-      border-color: var(--red);
+      border-color: var(--green);
     }
 
     .season-winner {
@@ -221,7 +222,7 @@
     .stat-card {
       background: var(--bg2);
       border: 1px solid var(--border);
-      border-top: 3px solid var(--red);
+      border-top: 3px solid var(--green);
       padding: 1.25rem;
       animation: fadeUp 0.4s ease both;
     }
@@ -270,7 +271,7 @@
       display: block;
       width: 4px;
       height: 1.5rem;
-      background: var(--red);
+      background: var(--green);
     }
 
     table {
@@ -280,7 +281,7 @@
     }
 
     thead tr {
-      border-bottom: 2px solid var(--red);
+      border-bottom: 2px solid var(--green);
     }
 
     th {
@@ -344,7 +345,7 @@
       border-radius: 2px;
     }
 
-    .badge-red { background: var(--red); color: white; }
+    .badge-red { background: var(--danger); color: white; }
     .badge-grey { background: var(--bg3); color: var(--grey); border: 1px solid var(--border); }
 
     /* AWARDS */
@@ -366,7 +367,7 @@
       transition: border-color 0.2s;
     }
 
-    .award-card:hover { border-color: var(--red); }
+    .award-card:hover { border-color: var(--green); }
 
     .award-emoji {
       font-size: 2rem;
@@ -380,7 +381,7 @@
       font-size: 1rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--red);
+      color: var(--green);
     }
 
     .award-winner {
@@ -412,7 +413,7 @@
       justify-content: space-between;
       cursor: pointer;
       transition: background 0.15s;
-      border-left: 4px solid var(--red);
+      border-left: 4px solid var(--green);
     }
 
     .race-header:hover { background: var(--bg3); }
@@ -423,7 +424,7 @@
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
       font-size: 2rem;
-      color: var(--red);
+      color: var(--green);
       line-height: 1;
       min-width: 2rem;
     }
@@ -481,7 +482,7 @@
       pointer-events: none;
     }
 
-    .driver-card:hover { border-color: var(--red); transform: translateY(-2px); }
+    .driver-card:hover { border-color: var(--green); transform: translateY(-2px); }
 
     .driver-card-tag { font-size: 1.5rem; margin-bottom: 0.5rem; }
 
@@ -530,14 +531,16 @@
 
     /* UTIL */
     .mt2 { margin-top: 2rem; }
-    .red { color: var(--red); }
+    .red { color: var(--danger); }
+    .stat-card .value.red,
+    .driver-stat .ds-val.red { color: var(--danger); }
     .gold { color: var(--gold); }
     .purple { color: var(--purple); }
 
-    .dnf { color: var(--red); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; }
+    .dnf { color: var(--danger); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; }
 
     .improvement.positive { color: #4caf50; }
-    .improvement.negative { color: var(--red); }
+    .improvement.negative { color: var(--danger); }
     .improvement.neutral { color: var(--grey); }
 
     /* FOOTER */
@@ -552,7 +555,7 @@
       margin-top: 4rem;
     }
 
-    footer span { color: var(--red); }
+    footer span { color: var(--green); }
   </style>
 </head>
 <body>
