@@ -1,0 +1,16 @@
+{
+  "seasons": [
+    {
+      "id": "season-1",
+      "label": "Season 1",
+      "file": "races-season-1.json",
+      "raceCount": 3
+    },
+    {
+      "id": "season-2",
+      "label": "Season 2",
+      "file": "races-season-2.json",
+      "raceCount": 0
+    }
+  ]
+}

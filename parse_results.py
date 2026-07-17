@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 """
-Parses all iRacing event result JSONs from the results/ folder
-and generates docs/data/races.json automatically.
+Parses all iRacing event result JSONs from results/season-*/ folders
+and generates one docs/data/races-season-N.json per season, plus a
+docs/data/seasons.json manifest listing the available seasons.
 """
 
 import json
 import os
+import re
 import glob
 from datetime import datetime, timezone
 
 RESULTS_DIR = "results"
-OUTPUT_FILE = "docs/data/races.json"
-SEASON_YEAR = "2026"
+OUTPUT_DIR = "docs/data"
+
+SEASON_DIR_RE = re.compile(r"^season-(\d+)$")
+
 
 def parse_result(filepath):
     with open(filepath) as f:
@@ -85,14 +89,24 @@ def parse_result(filepath):
     }
 
 
-def main():
-    files = glob.glob(os.path.join(RESULTS_DIR, "eventresult-*.json"))
+def find_season_dirs():
+    """Return sorted list of (season_number, dir_path) for results/season-N/ folders."""
+    seasons = []
+    if not os.path.isdir(RESULTS_DIR):
+        return seasons
+    for entry in os.listdir(RESULTS_DIR):
+        full = os.path.join(RESULTS_DIR, entry)
+        if not os.path.isdir(full):
+            continue
+        m = SEASON_DIR_RE.match(entry)
+        if m:
+            seasons.append((int(m.group(1)), full))
+    seasons.sort(key=lambda s: s[0])
+    return seasons
 
-    if not files:
-        print(f"No result files found in {RESULTS_DIR}/")
-        return
 
-    print(f"Found {len(files)} result file(s)...")
+def parse_season(season_num, season_dir):
+    files = glob.glob(os.path.join(season_dir, "eventresult-*.json"))
 
     parsed = []
     for f in files:
@@ -101,10 +115,9 @@ def main():
         if result:
             parsed.append(result)
 
-    # Sort by date ascending
+    # Sort by date ascending, assign sequential IDs
     parsed.sort(key=lambda r: r['_date'])
 
-    # Assign sequential IDs based on date order
     races = []
     for i, r in enumerate(parsed):
         races.append({
@@ -115,18 +128,48 @@ def main():
             "results": r["results"]
         })
 
-    output = {
-        "season": SEASON_YEAR,
+    return {
+        "season": season_num,
+        "label": f"Season {season_num}",
         "races": races
     }
 
-    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-    with open(OUTPUT_FILE, 'w') as f:
-        json.dump(output, f, indent=2)
 
-    print(f"\nDone! Generated {OUTPUT_FILE} with {len(races)} race(s).")
-    for r in races:
-        print(f"  Race {r['id']}: {r['track']} ({r['date']}) — {len(r['results'])} drivers")
+def main():
+    season_dirs = find_season_dirs()
+
+    if not season_dirs:
+        print(f"No season folders found in {RESULTS_DIR}/ (expected results/season-1, results/season-2, ...)")
+        return
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    manifest = {"seasons": []}
+
+    for season_num, season_dir in season_dirs:
+        print(f"Season {season_num}: scanning {season_dir}...")
+        season_data = parse_season(season_num, season_dir)
+
+        out_file = f"races-season-{season_num}.json"
+        out_path = os.path.join(OUTPUT_DIR, out_file)
+        with open(out_path, 'w') as f:
+            json.dump(season_data, f, indent=2)
+
+        race_count = len(season_data["races"])
+        print(f"  -> {out_path} ({race_count} race(s))")
+
+        manifest["seasons"].append({
+            "id": f"season-{season_num}",
+            "label": season_data["label"],
+            "file": out_file,
+            "raceCount": race_count
+        })
+
+    manifest_path = os.path.join(OUTPUT_DIR, "seasons.json")
+    with open(manifest_path, 'w') as f:
+        json.dump(manifest, f, indent=2)
+
+    print(f"\nDone! Wrote {manifest_path} with {len(manifest['seasons'])} season(s).")
 
 
 if __name__ == "__main__":

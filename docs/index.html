@@ -119,17 +119,55 @@
       text-transform: uppercase;
     }
 
-    .season-badge {
+    .season-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .season-tab {
       display: inline-block;
-      background: var(--red);
-      color: white;
+      background: var(--bg3);
+      color: var(--grey);
+      border: 1px solid var(--border);
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
       font-size: 0.75rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      padding: 0.25rem 0.75rem;
-      margin-top: 1rem;
+      padding: 0.35rem 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .season-tab:hover { color: var(--white); border-color: var(--red); }
+
+    .season-tab.active {
+      background: var(--red);
+      color: white;
+      border-color: var(--red);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--grey);
+      border: 1px dashed var(--border);
+      background: var(--bg2);
+    }
+
+    .empty-state .emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+    .empty-state .title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      margin-bottom: 0.25rem;
     }
 
     /* MAIN LAYOUT */
@@ -499,7 +537,7 @@
 <div class="hero">
   <h1>Last Place <span>Race Club</span></h1>
   <p>Formula Vee · iRacing · Sunday Sessions</p>
-  <div class="season-badge" id="season-badge">Season 2026</div>
+  <div class="season-tabs" id="season-tabs"></div>
 </div>
 
 <main>
@@ -554,17 +592,47 @@
 <script>
   let driversData = [];
   let racesData = [];
+  let seasonsManifest = [];
+  let currentSeasonId = null;
+  const seasonDataCache = {};
 
   async function loadData() {
-    const [driversRes, racesRes] = await Promise.all([
+    const [driversRes, seasonsRes] = await Promise.all([
       fetch('data/drivers.json'),
-      fetch('data/races.json')
+      fetch('data/seasons.json')
     ]);
     const drivers = await driversRes.json();
-    const races = await racesRes.json();
+    const seasons = await seasonsRes.json();
     driversData = drivers.drivers;
-    racesData = races.races;
-    document.getElementById('season-badge').textContent = `Season ${races.season}`;
+    seasonsManifest = seasons.seasons;
+
+    buildSeasonTabs();
+
+    const withRaces = [...seasonsManifest].reverse().find(s => s.raceCount > 0);
+    const defaultSeason = withRaces || seasonsManifest[seasonsManifest.length - 1];
+    await selectSeason(defaultSeason.id);
+  }
+
+  function buildSeasonTabs() {
+    const tabs = document.getElementById('season-tabs');
+    tabs.innerHTML = seasonsManifest.map(s => `
+      <div class="season-tab" id="tab-${s.id}" onclick="selectSeason('${s.id}')">${s.label}</div>
+    `).join('');
+  }
+
+  async function selectSeason(id) {
+    currentSeasonId = id;
+    document.querySelectorAll('.season-tab').forEach(t => t.classList.remove('active'));
+    const tabEl = document.getElementById(`tab-${id}`);
+    if (tabEl) tabEl.classList.add('active');
+
+    if (!seasonDataCache[id]) {
+      const meta = seasonsManifest.find(s => s.id === id);
+      const res = await fetch(`data/${meta.file}`);
+      const data = await res.json();
+      seasonDataCache[id] = data.races;
+    }
+    racesData = seasonDataCache[id];
     buildAll();
   }
 
@@ -617,6 +685,19 @@
   }
 
   function buildStandings(stats) {
+    if (stats.length === 0) {
+      document.getElementById('overview-stats').innerHTML = '';
+      document.getElementById('standings-body').innerHTML = `
+        <tr><td colspan="10">
+          <div class="empty-state">
+            <div class="emoji">🏁</div>
+            <div class="title">No races yet</div>
+            <div>Results will show up here once this season gets underway.</div>
+          </div>
+        </td></tr>`;
+      return;
+    }
+
     const sorted = [...stats].sort((a, b) => {
       if (b.points !== a.points) return b.points - a.points;
       const avgA = a.races ? a.points / a.races : 0;
@@ -682,6 +763,17 @@
   }
 
   function buildAwards(stats) {
+    const grid = document.getElementById('awards-grid');
+    if (stats.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="emoji">🏆</div>
+          <div class="title">No awards yet</div>
+          <div>Awards are handed out once races have been run this season.</div>
+        </div>`;
+      return;
+    }
+
     const awards = [];
 
     // Most wins
@@ -730,8 +822,7 @@
       const avg = (pickBattles.points / pickBattles.races).toFixed(1);
       awards.push({ emoji: '🎯', title: 'Pick Your Battles', winner: pickBattles.displayName, desc: `${avg} avg points per race. Quality over quantity.` });
     }
-    
-    const grid = document.getElementById('awards-grid');
+
     grid.innerHTML = awards.map((a, i) => `
       <div class="award-card" style="animation-delay:${i*0.06}s">
         <div class="award-emoji">${a.emoji}</div>
@@ -747,6 +838,17 @@
   function buildRaces() {
     const POINTS = {1:25,2:18,3:15,4:12,5:10,6:8,7:6,8:4,9:2};
     const list = document.getElementById('races-list');
+
+    if (racesData.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="emoji">🚦</div>
+          <div class="title">No races yet</div>
+          <div>Check back once the first race of this season has been run.</div>
+        </div>`;
+      return;
+    }
+
     const sorted = [...racesData].sort((a,b) => b.id - a.id);
     list.innerHTML = sorted.map((race, i) => {
       const rows = race.results.map(r => {
@@ -809,6 +911,17 @@
 
   function buildDrivers(stats) {
     const grid = document.getElementById('drivers-grid');
+
+    if (stats.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="emoji">🧑‍🚀</div>
+          <div class="title">No driver stats yet</div>
+          <div>Driver profiles will populate once this season has race results.</div>
+        </div>`;
+      return;
+    }
+
     const sorted = [...stats].sort((a,b) => a.displayName.localeCompare(b.displayName));
     grid.innerHTML = sorted.map((s, i) => {
       const avgPts = s.races ? (s.points / s.races).toFixed(1) : '—';

@@ -1,5 +1,6 @@
 {
-  "season": "2026",
+  "season": 1,
+  "label": "Season 1",
   "races": [
     {
       "id": 1,
