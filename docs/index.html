@@ -681,10 +681,11 @@
       });
     });
 
-    return Object.values(stats).filter(s => s.races > 0);
+    return Object.values(stats);
   }
 
-  function buildStandings(stats) {
+  function buildStandings(allStats) {
+    const stats = allStats.filter(s => s.races > 0);
     if (stats.length === 0) {
       document.getElementById('overview-stats').innerHTML = '';
       document.getElementById('standings-body').innerHTML = `
@@ -762,8 +763,9 @@
     `;
   }
 
-  function buildAwards(stats) {
+  function buildAwards(allStats) {
     const grid = document.getElementById('awards-grid');
+    const stats = allStats.filter(s => s.races > 0);
     if (stats.length === 0) {
       grid.innerHTML = `
         <div class="empty-state">
