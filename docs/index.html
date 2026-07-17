@@ -171,6 +171,18 @@
       border-color: var(--red);
     }
 
+    .season-winner {
+      margin-top: 0.75rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    .season-winner strong { color: var(--gold); }
+
     .empty-state {
       text-align: center;
       padding: 3rem 1rem;
@@ -564,6 +576,7 @@
   <h1>Last Place <span>Race Club</span></h1>
   <p>Formula Vee · iRacing · Sunday Sessions</p>
   <div class="season-tabs" id="season-tabs"></div>
+  <div class="season-winner" id="season-winner"></div>
 </div>
 
 <main>
@@ -637,6 +650,38 @@
     const withRaces = [...seasonsManifest].reverse().find(s => s.raceCount > 0);
     const defaultSeason = withRaces || seasonsManifest[seasonsManifest.length - 1];
     await selectSeason(defaultSeason.id);
+
+    await showSeasonWinnerBadge('season-1', 'Season 1');
+  }
+
+  async function showSeasonWinnerBadge(seasonId, label) {
+    const meta = seasonsManifest.find(s => s.id === seasonId);
+    const badge = document.getElementById('season-winner');
+    if (!meta || meta.raceCount === 0) {
+      badge.innerHTML = '';
+      return;
+    }
+
+    if (!seasonDataCache[seasonId]) {
+      const res = await fetch(`data/${meta.file}`);
+      const data = await res.json();
+      seasonDataCache[seasonId] = data.races;
+    }
+
+    const stats = computeStats(seasonDataCache[seasonId]).filter(s => s.races > 0);
+    if (stats.length === 0) {
+      badge.innerHTML = '';
+      return;
+    }
+
+    const winner = [...stats].sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      const avgA = a.races ? a.points / a.races : 0;
+      const avgB = b.races ? b.points / b.races : 0;
+      return avgB - avgA;
+    })[0];
+
+    badge.innerHTML = `🏆 ${label} Winner: <strong>${winner.displayName}</strong>`;
   }
 
   function buildSeasonTabs() {
@@ -666,7 +711,7 @@
     return driversData.find(d => d.iracing_name === name) || { iracing_name: name, display_name: name, tag: '🏎️' };
   }
 
-  function computeStats() {
+  function computeStats(races = racesData) {
     const POINTS = {1:25,2:18,3:15,4:12,5:10,6:8,7:6,8:4,9:2};
 
     const stats = {};
@@ -682,7 +727,7 @@
       };
     });
 
-    racesData.forEach(race => {
+    races.forEach(race => {
       race.results.forEach(r => {
         if (!stats[r.driver]) {
           stats[r.driver] = {
